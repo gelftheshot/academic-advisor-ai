@@ -11,6 +11,9 @@
   "dependencies": {
     "@ai-sdk/google": "^0.0.35",
     "@google/generative-ai": "^0.16.0",
+    "@langchain/google-genai": "^0.0.26",
+    "@langchain/pinecone": "^0.0.9",
+    "@pinecone-database/pinecone": "^3.0.1",
     "ai": "^3.3.4",
     "firebase": "^10.12.5",
     "next": "14.2.5",

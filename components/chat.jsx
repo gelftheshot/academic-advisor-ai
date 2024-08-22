@@ -6,24 +6,59 @@ import Message from "./message";
 const Chat = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
   const chatId = params?.chatID;
   const abortControllerRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     const userMessage = { role: 'user', content: input };
     setChatMessages(prev => [...prev, userMessage]);
     setInput('');
+    setIsLoading(true);
 
-    // Simulate AI response (replace with actual API call later)
-    setTimeout(() => {
-      const aiMessage = { role: 'assistant', content: 'This is a simulated AI response.' };
-      setChatMessages(prev => [...prev, aiMessage]);
-    }, 1000);
+    try {
+      abortControllerRef.current = new AbortController();
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [...chatMessages, userMessage] }),
+        signal: abortControllerRef.current.signal
+      });
+
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let aiMessage = { role: 'assistant', content: '' };
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        aiMessage.content += chunk;
+        setChatMessages(prev => [...prev.slice(0, -1), aiMessage]);
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        console.error('Error:', error);
+        setChatMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, there was an error processing your request.' }]);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   return (
     <div className="flex-1 flex flex-col bg-white h-full">
@@ -40,12 +75,14 @@ const Chat = () => {
               value={input}
               placeholder="Type your message here"
               onChange={(e) => setInput(e.target.value)}
+              disabled={isLoading}
             />
             <button
               type="submit"
-              className="absolute right-2 top-2 bg-blue-500 text-white px-3 md:px-4 py-1 md:py-2 rounded-full text-sm font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              className={`absolute right-2 top-2 ${isLoading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'} text-white px-3 md:px-4 py-1 md:py-2 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors`}
+              disabled={isLoading}
             >
-              Send
+              {isLoading ? 'Sending...' : 'Send'}
             </button>
           </div>
         </form>
