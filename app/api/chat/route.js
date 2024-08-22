@@ -6,6 +6,8 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { PineconeStore } from "@langchain/pinecone";
+import fs from 'fs';
+import path from 'path';
 
 // Load environment variables
 const GOOGLE_API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
@@ -38,17 +40,17 @@ const systemPrompt = `You are an AI assistant for a university's "Rate My Profes
 
 Remember, your goal is to help students make informed decisions about their education by connecting them with the most suitable professors based on their specific needs and interests.`;
 
-// Initialize Pinecone client
-const pinecone = new Pinecone({
-  apiKey: PINECONE_API_KEY,
-});
+async function initializeChain() {
+  // Initialize Pinecone client
+  const pinecone = new Pinecone({
+    apiKey: PINECONE_API_KEY,
+    environment: PINECONE_ENVIRONMENT,
+  });
 
-export async function POST(req) {
-  const { messages } = await req.json();
-  const userQuery = messages[messages.length - 1].content;
-
-  // Get the index
-  const index = pinecone.index(PINECONE_INDEX);
+  // Load the JSON data
+  const dataPath = path.join(process.cwd(), 'data.json');
+  const rawData = fs.readFileSync(dataPath, 'utf8');
+  const professorData = JSON.parse(rawData);
 
   // Initialize embeddings
   const embeddings = new GoogleGenerativeAIEmbeddings({
@@ -56,13 +58,19 @@ export async function POST(req) {
     apiKey: GOOGLE_API_KEY,
   });
 
-  // Initialize vector store with error handling
+  // Initialize vector store
+  const index = pinecone.Index(PINECONE_INDEX);
   let vectorStore;
   try {
     vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex: index });
+    
+    // Test query to check if the vector store is working
+    const testQuery = "test query";
+    const testResults = await vectorStore.similaritySearch(testQuery, 1);
+    console.log("Test query results:", testResults);
   } catch (error) {
-    console.error("Error initializing vector store:", error);
-    return new NextResponse("Error initializing vector store", { status: 500 });
+    console.error("Error initializing or querying vector store:", error);
+    throw error;
   }
 
   // Create a retriever with error handling
@@ -96,7 +104,7 @@ export async function POST(req) {
 
   const prompt = PromptTemplate.fromTemplate(template);
 
-  // Create a runnable sequence with error handling
+  // Create a runnable sequence
   const chain = RunnableSequence.from([
     {
       system_prompt: () => systemPrompt,
@@ -112,36 +120,40 @@ export async function POST(req) {
       },
     },
     prompt,
-    async (input) => {
-      try {
-        return await model.invoke(input);
-      } catch (error) {
-        if (error.message.includes("RECITATION")) {
-          console.error("RECITATION error:", error);
-          return "I apologize, but I couldn't generate a response due to content restrictions. Could you please rephrase your question?";
-        }
-        throw error;
-      }
-    },
+    model,
     new StringOutputParser(),
   ]);
 
-  // Create a streaming response
-  const stream = new ReadableStream({
-    async start(controller) {
-      const runStream = await chain.stream({ question: userQuery });
-      for await (const chunk of runStream) {
-        controller.enqueue(chunk);
-      }
-      controller.close();
-    },
-  });
+  return chain;
+}
 
-  // Return the streaming response
-  return new NextResponse(stream, {
-    headers: {
-      "Content-Type": "text/plain",
-      "Transfer-Encoding": "chunked",
-    },
-  });
+const chainPromise = initializeChain();
+
+export async function POST(req) {
+  try {
+    const { messages } = await req.json();
+    const userQuery = messages[messages.length - 1].content;
+
+    const chain = await chainPromise;
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        const runStream = await chain.stream({ question: userQuery });
+        for await (const chunk of runStream) {
+          controller.enqueue(chunk);
+        }
+        controller.close();
+      },
+    });
+
+    return new NextResponse(stream, {
+      headers: {
+        "Content-Type": "text/plain",
+        "Transfer-Encoding": "chunked",
+      },
+    });
+  } catch (error) {
+    console.error("Error in POST handler:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
 }
