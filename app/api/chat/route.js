@@ -5,6 +5,7 @@ import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables";
 import { PromptTemplate } from "@langchain/core/prompts";
+import { PineconeStore } from "@langchain/pinecone";
 
 // Load environment variables
 const GOOGLE_API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
@@ -40,7 +41,6 @@ Remember, your goal is to help students make informed decisions about their educ
 // Initialize Pinecone client
 const pinecone = new Pinecone({
   apiKey: PINECONE_API_KEY,
-  environment: PINECONE_ENVIRONMENT,
 });
 
 export async function POST(req) {
@@ -48,7 +48,7 @@ export async function POST(req) {
   const userQuery = messages[messages.length - 1].content;
 
   // Get the index
-  const index = pinecone.Index(PINECONE_INDEX);
+  const index = pinecone.index(PINECONE_INDEX);
 
   // Initialize embeddings
   const embeddings = new GoogleGenerativeAIEmbeddings({
@@ -56,8 +56,24 @@ export async function POST(req) {
     apiKey: GOOGLE_API_KEY,
   });
 
-  // Initialize vector store
-  const vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex: index });
+  // Initialize vector store with error handling
+  let vectorStore;
+  try {
+    vectorStore = await PineconeStore.fromExistingIndex(embeddings, { pineconeIndex: index });
+  } catch (error) {
+    console.error("Error initializing vector store:", error);
+    return new NextResponse("Error initializing vector store", { status: 500 });
+  }
+
+  // Create a retriever with error handling
+  const retriever = vectorStore.asRetriever({
+    callbacks: [{
+      handleRetrieverError: (error) => {
+        console.error("Retriever error:", error);
+        return []; // Return an empty array if there's an error
+      }
+    }]
+  });
 
   // Initialize chat model
   const model = new ChatGoogleGenerativeAI({
@@ -66,9 +82,6 @@ export async function POST(req) {
     apiKey: GOOGLE_API_KEY,
     streaming: true,
   });
-
-  // Create a retriever
-  const retriever = vectorStore.asRetriever();
 
   // Create a prompt template
   const template = `
@@ -83,15 +96,33 @@ export async function POST(req) {
 
   const prompt = PromptTemplate.fromTemplate(template);
 
-  // Create a runnable sequence
+  // Create a runnable sequence with error handling
   const chain = RunnableSequence.from([
     {
       system_prompt: () => systemPrompt,
       human_input: (input) => input.question,
-      context: retriever.pipe((docs) => docs.map((doc) => doc.pageContent).join("\n")),
+      context: async (input) => {
+        try {
+          const docs = await retriever.getRelevantDocuments(input.question);
+          return docs.map((doc) => doc.pageContent).join("\n");
+        } catch (error) {
+          console.error("Error retrieving documents:", error);
+          return ""; // Return an empty string if there's an error
+        }
+      },
     },
     prompt,
-    model,
+    async (input) => {
+      try {
+        return await model.invoke(input);
+      } catch (error) {
+        if (error.message.includes("RECITATION")) {
+          console.error("RECITATION error:", error);
+          return "I apologize, but I couldn't generate a response due to content restrictions. Could you please rephrase your question?";
+        }
+        throw error;
+      }
+    },
     new StringOutputParser(),
   ]);
 
