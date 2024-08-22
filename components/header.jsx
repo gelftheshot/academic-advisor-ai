@@ -1,9 +1,7 @@
 import Link from 'next/link'
 import '../styles/global.css'
-import { RiChatNewFill, RiMenu2Line } from "react-icons/ri";
-import { v4 as uuidv4 } from 'uuid';
-import { TbMessageChatbot } from "react-icons/tb";
-
+import { RiUserSearchLine, RiMenu2Line } from "react-icons/ri";
+import { FaGraduationCap } from "react-icons/fa";
 
 const Header = ({ toggleSidebar, isMobile }) => {
   return (
@@ -14,18 +12,17 @@ const Header = ({ toggleSidebar, isMobile }) => {
             <RiMenu2Line className="w-6 h-6" />
           </button>
         )}
-        <Link href='/'>
-          <TbMessageChatbot className="h-8 w-auto" />
+        <Link href='/' className="flex items-center space-x-2">
+          <FaGraduationCap className="h-8 w-auto" />
+          <span className="text-xl font-bold hidden md:inline">Rate My Professor AI</span>
         </Link>
-        <h1 className="text-xl font-bold hidden md:block">AI Chat Assistant</h1>
         <Link href="/chat?new=true" className="flex items-center space-x-2 px-4 py-2 bg-white text-blue-600 rounded-full hover:bg-blue-100 transition-colors">
-          <RiChatNewFill className="w-5 h-5 text-blue-600" />
-          <span className="hidden md:inline">New Chat</span>
+          <RiUserSearchLine className="w-5 h-5" />
+          <span className="hidden md:inline">Find a Professor</span>
         </Link>
       </div>
     </header>
   )
 }
-
 
 export default Header
