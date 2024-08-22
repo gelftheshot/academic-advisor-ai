@@ -19,32 +19,19 @@ const Chat = () => {
     setIsLoading(true);
 
     try {
-      abortControllerRef.current = new AbortController();
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [...chatMessages, userMessage] }),
-        signal: abortControllerRef.current.signal
+        body: JSON.stringify({ message: input }),
       });
 
       if (!response.ok) throw new Error('Network response was not ok');
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let aiMessage = { role: 'assistant', content: '' };
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        aiMessage.content += chunk;
-        setChatMessages(prev => [...prev.slice(0, -1), aiMessage]);
-      }
+      const data = await response.json();
+      setChatMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
     } catch (error) {
-      if (error.name !== 'AbortError') {
-        console.error('Error:', error);
-        setChatMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, there was an error processing your request.' }]);
-      }
+      console.error('Error:', error);
+      setChatMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, there was an error processing your request.' }]);
     } finally {
       setIsLoading(false);
     }
