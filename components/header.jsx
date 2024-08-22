@@ -18,7 +18,7 @@ const Header = ({ toggleSidebar, isMobile }) => {
           <TbMessageChatbot className="h-8 w-auto" />
         </Link>
         <h1 className="text-xl font-bold hidden md:block">AI Chat Assistant</h1>
-        <Link href={`/chat/${uuidv4()}`} className="flex items-center space-x-2 px-4 py-2 bg-white text-blue-600 rounded-full hover:bg-blue-100 transition-colors">
+        <Link href="/chat?new=true" className="flex items-center space-x-2 px-4 py-2 bg-white text-blue-600 rounded-full hover:bg-blue-100 transition-colors">
           <RiChatNewFill className="w-5 h-5 text-blue-600" />
           <span className="hidden md:inline">New Chat</span>
         </Link>

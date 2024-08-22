@@ -1,14 +1,12 @@
 "use client";
 
-import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation';
 
 const StartChat = () => {
   const router = useRouter();
 
   const handleStartChat = () => {
-    const newChatId = uuidv4();
-    router.push(`/chat/${newChatId}`);
+    router.push('/chat');
   };
 
   return (

@@ -7,8 +7,6 @@ const Chat = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const params = useParams();
-  const chatId = params?.chatID;
   const abortControllerRef = useRef(null);
 
   const handleSubmit = async (e) => {

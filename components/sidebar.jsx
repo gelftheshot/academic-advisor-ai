@@ -34,7 +34,7 @@ const Sidebar = ({ isOpen, setIsOpen, isMobile }) => {
         <ul className="space-y-2">
           {chats.map((chat) => (
             <li key={chat.id}>
-              <Link href={`/chat/${chat.id}`} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-200 transition-colors">
+              <Link href="/chat" className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-200 transition-colors">
                 <RiChat3Line className="w-5 h-5 text-blue-600" />
                 <span className="text-sm font-medium">{truncateTitle(chat.title || 'Untitled Chat')}</span>
               </Link>

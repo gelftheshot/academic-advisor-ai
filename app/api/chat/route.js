@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { PineconeStore } from "@langchain/pinecone";
+import { Pinecone } from "@pinecone-database/pinecone";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-import { PineconeClient } from "@pinecone-database/pinecone";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables";
 import { PromptTemplate } from "@langchain/core/prompts";
@@ -39,18 +38,16 @@ const systemPrompt = `You are an AI assistant for a university's "Rate My Profes
 Remember, your goal is to help students make informed decisions about their education by connecting them with the most suitable professors based on their specific needs and interests.`;
 
 // Initialize Pinecone client
-const pinecone = new PineconeClient();
+const pinecone = new Pinecone({
+  apiKey: PINECONE_API_KEY,
+  environment: PINECONE_ENVIRONMENT,
+});
 
 export async function POST(req) {
   const { messages } = await req.json();
   const userQuery = messages[messages.length - 1].content;
 
-  // Initialize Pinecone
-  await pinecone.init({
-    environment: PINECONE_ENVIRONMENT,
-    apiKey: PINECONE_API_KEY,
-  });
-
+  // Get the index
   const index = pinecone.Index(PINECONE_INDEX);
 
   // Initialize embeddings
