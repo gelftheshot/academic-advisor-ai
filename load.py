@@ -22,19 +22,18 @@ dim = 768  # Dimension for embeddings
 pc = Pinecone(api_key=PINECONE_API_KEY)
 
 # Check if index exists and create if it doesn't
-if index_name not in pc.list_indexes().names():
-    pc.create_index(
-        name=index_name,
-        dimension=dim,
-        metric="cosine",
-        spec=ServerlessSpec(
-            cloud="aws",
-            region="us-east-1"
-        )
+if index_name in pc.list_indexes().names():
+    pc.delete_index(index_name)
+pc.create_index(
+    name=index_name,
+    dimension=dim,
+    metric="cosine",
+    spec=ServerlessSpec(
+        cloud="aws",
+        region="us-east-1"
     )
-    print(f"Created new index '{index_name}' with dimension {dim}")
-else:
-    print(f"Using existing index '{index_name}'")
+)
+print(f"Created new index '{index_name}' with dimension {dim}")
 
 # Get the index
 index = pc.Index(index_name)
@@ -44,25 +43,51 @@ def json_file_path(json_file_path):
     with open(json_file_path, 'r') as file:
         data = json.load(file)
     
-    # Convert each JSON object to a string
-    texts = [json.dumps(item) for item in data]
-    
     # Initialize Google Generative AI embedding model
     embeddings = GoogleGenerativeAIEmbeddings(
         model="models/embedding-001",
-        google_api_key=GOOGLE_API_KEY,
-        dimensions=768
+        google_api_key=GOOGLE_API_KEY
     )
     
-    # Create Pinecone vector store
-    vectorstore = LangchainPinecone.from_texts(
-        texts=texts,
-        embedding=embeddings,
-        index_name=index_name,
-        namespace="json_data"
-    )
+    processed_data = []
+    for professor in data['professors']:
+        # Create a comprehensive summary of the professor
+        summary = (
+            f"Professor {professor['name']} is a {professor['sex']} educator in the {professor['department']} department. "
+            f"They teach {', '.join(professor['subjects'])} and are known for {professor['knownFor']}. "
+            f"With {professor['yearsTeaching']} years of teaching experience and {professor['publications']} publications, "
+            f"they have a rating of {professor['rating']}. Their research interests include {' and '.join(professor['researchInterests'])}. "
+            f"Awards: {', '.join(professor['awards'])}. Fun fact: {professor['funFact']}"
+        )
+        
+        # Create embedding for the summary
+        embedding = embeddings.embed_query(summary)
+        
+        # Prepare the data for storage
+        processed_data.append({
+            "values": embedding,
+            "id": f"professor_{professor['id']}",
+            "metadata": {
+                "name": professor['name'],
+                "sex": professor['sex'],
+                "department": professor['department'],
+                "subjects": professor['subjects'],
+                "known_for": professor['knownFor'],
+                "rating": professor['rating'],
+                "years_teaching": professor['yearsTeaching'],
+                "publications": professor['publications'],
+                "awards": professor['awards'],
+                "office_hours": professor['officeHours'],
+                "research_interests": professor['researchInterests'],
+                "fun_fact": professor['funFact']
+            }
+        })
     
-    print(f"Embedded {len(texts)} JSON objects into Pinecone index '{index_name}'")
+    # Store in Pinecone
+    index = pc.Index(index_name)
+    index.upsert(vectors=processed_data)
+
+    print(f"Upserted {len(processed_data)} professors into Pinecone index '{index_name}'")
 
 # Call the function with your JSON file
 json_file_path('data.json')
