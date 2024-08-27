@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-import { RiBookMarkLine, RiUserSearchLine, RiQuestionLine, RiCloseLine } from "react-icons/ri";
+import { RiBookmarkLine, RiUserSearchLine, RiQuestionLine, RiCloseLine } from "react-icons/ri"; // Updated import
 import Link from 'next/link';
 
 const Sidebar = ({ isOpen, setIsOpen, isMobile }) => {
@@ -27,7 +27,7 @@ const Sidebar = ({ isOpen, setIsOpen, isMobile }) => {
           </li>
           <li>
             <Link href="/departments" className="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-              <RiBookMarkLine className="w-5 h-5" />
+              <RiBookmarkLine className="w-5 h-5" /> {/* Updated icon */}
               <span>Departments</span>
             </Link>
           </li>
@@ -53,6 +53,6 @@ const Sidebar = ({ isOpen, setIsOpen, isMobile }) => {
       </footer>
     </div>
   );
-}
+};
 
 export default Sidebar;
