@@ -1,4 +1,4 @@
-import CoursePlanner from '../components/coursePlanner';
+import CoursePlanner from '../../components/coursePlanner';
 
 const CoursePlannerPage = () => {
   return <CoursePlanner />;

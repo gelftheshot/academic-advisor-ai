@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import '../styles/global.css'
+import Link from 'next/link';
+import '../styles/global.css';
 import { RiUserSearchLine, RiMenu2Line } from "react-icons/ri";
 import { FaGraduationCap } from "react-icons/fa";
 
@@ -26,7 +26,7 @@ const Header = ({ toggleSidebar, isMobile }) => {
         </div>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

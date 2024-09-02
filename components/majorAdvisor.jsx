@@ -58,9 +58,9 @@ const MajorAdvisor = () => {
         </button>
       </form>
       {recommendation && (
-        <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-md">
-          <h2 className="text-xl font-bold">Recommended Major and Career Path</h2>
-          <p>{recommendation}</p>
+        <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-md shadow-md">
+          <h2 className="text-xl font-bold mb-2">Recommended Major and Career Path</h2>
+          <p className="whitespace-pre-line">{recommendation}</p>
         </div>
       )}
     </div>
