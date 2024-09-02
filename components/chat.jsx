@@ -56,7 +56,7 @@ const Chat = () => {
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
           <div className="relative">
             <input
-              className="w-full p-3 md:p-4 pr-20 md:pr-24 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              className="w-full p-3 md:p-4 pr-20 md:pr-24 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
               value={input}
               placeholder="Ask about a professor or course..."
               onChange={(e) => setInput(e.target.value)}
@@ -64,7 +64,7 @@ const Chat = () => {
             />
             <button
               type="submit"
-              className={`absolute right-2 top-2 ${isLoading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'} text-white px-3 md:px-4 py-1 md:py-2 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors`}
+              className={`absolute right-2 top-2 ${isLoading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'} text-white px-3 md:px-4 py-1 md:py-2 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors`}
               disabled={isLoading}
             >
               {isLoading ? 'Searching...' : 'Search'}
