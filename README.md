@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 Academic Advisor AI is your ultimate tool for academic planning, finding professors, and getting career advice. The application provides features such as finding professors, getting major and career advice, and planning courses.
 
-![Academic Advisor AI](./path/to/your/image.png)
+![Academic Advisor AI](./image/image1.pngimage.png)
 
 ## Getting Started
 
