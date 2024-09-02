@@ -27,7 +27,7 @@ To use your own Pinecone API and Google Gemini API, modify the `data.json` file 
 ### Find a Related Professor
 Discover professors related to your interests and needs through our advanced search and AI-powered conversation feature.
 
-![Find a Professor](./image/image2.png)
+![Find a Professor](./image/image3.png)
 
 ### Major Advisor
 Get personalized advice on choosing your major and career path based on your interests and strengths.
@@ -72,4 +72,3 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-![Deploy on Vercel](./image/image5.png)
