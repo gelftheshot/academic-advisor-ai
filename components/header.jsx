@@ -14,7 +14,7 @@ const Header = ({ toggleSidebar, isMobile }) => {
         )}
         <Link href='/' className="flex items-center space-x-2">
           <FaGraduationCap className="h-8 w-auto" />
-          <span className="text-xl font-bold hidden md:inline">Rate My Professor AI</span>
+          <span className="text-xl font-bold hidden md:inline">Academic Advisor AI</span>
         </Link>
         <div className="flex items-center space-x-4">
           <Link href="/chat?new=true" className="flex items-center space-x-2 px-4 py-2 bg-white text-green-600 rounded-full hover:bg-green-100 transition-colors">

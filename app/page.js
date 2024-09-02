@@ -4,8 +4,8 @@ const Page = () => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 p-4">
       <header className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-green-600">Welcome to Rate My Professor AI</h1>
-        <p className="text-lg text-gray-700 mt-2">Your ultimate tool for finding and rating professors, planning your courses, and getting career advice.</p>
+        <h1 className="text-4xl font-bold text-green-600">Welcome to Academic Advisor AI</h1>
+        <p className="text-lg text-gray-700 mt-2">Your ultimate tool for academic planning, finding professors, and getting career advice.</p>
       </header>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="bg-white p-6 rounded-lg shadow-md text-center">
