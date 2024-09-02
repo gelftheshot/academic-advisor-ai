@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Overview
+
+Academic Advisor AI is your ultimate tool for academic planning, finding professors, and getting career advice. The application provides features such as finding professors, getting major and career advice, and planning courses.
+
+![Academic Advisor AI](./path/to/your/image.png)
+
 ## Getting Started
 
 First, run the development server:
@@ -20,17 +26,36 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+### Find a Professor
+Search and rate professors based on their teaching style, course difficulty, and more.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Major Advisor
+Get personalized advice on choosing your major and career path based on your interests and strengths.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Course Planner
+Plan your courses and ensure you meet all graduation requirements with our course planning tool.
 
-## Deploy on Vercel
+## Code Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### `app/page.js`
+This file contains the main landing page of the application.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### `app/layout.js`
+This file contains the layout structure of the application, including the header and sidebar.
+
+### `app/majorAdvisor/page.js`
+This file contains the Major Advisor page component.
+
+### `app/coursePlanner/page.js`
+This file contains the Course Planner page component.
+
+### `components/header.jsx`
+This file contains the header component of the application.
+
+### `components/sidebar.jsx`
+This file contains the sidebar component of the application.
+
+### `components/majorAdvisor.jsx`
+This file contains the Major Advisor component where users can input their interests, strengths, and career goals to get recommendations.
