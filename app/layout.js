@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <Head>
-        <title>Ai customer support</title>
+        <title>Academic Advisor AI</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>

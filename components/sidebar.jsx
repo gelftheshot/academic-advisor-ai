@@ -45,24 +45,6 @@ const Sidebar = ({ isOpen, setIsOpen, isMobile }) => {
           </li>
         </ul>
       </nav>
-      <div className="p-4">
-        <h2 className="text-lg font-semibold mb-2">Recent Searches</h2>
-        <ul className="space-y-2">
-          {chats.map((chat) => (
-            <li key={chat.id}>
-              <Link href={`/chat/${chat.id}`} className="block p-2 rounded hover:bg-green-700">
-                {chat.title}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <footer className="absolute bottom-0 w-full p-4 bg-green-900">
-        <Link href="/help" className="flex items-center space-x-2 text-sm hover:text-green-300">
-          <RiQuestionLine className="w-5 h-5" />
-          <span>Help & FAQ</span>
-        </Link>
-      </footer>
     </div>
   );
 };
