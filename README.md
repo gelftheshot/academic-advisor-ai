@@ -6,7 +6,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 Academic Advisor AI is your ultimate tool for academic planning, finding professors, and getting career advice. The application provides features such as finding related professors, getting major and career advice, and planning courses.
 
-![Academic Advisor AI](./image/image1.png)
+![Academic Advisor AI](./image/image3.png)
 
 ## Getting Started
 
@@ -27,13 +27,13 @@ To use your own Pinecone API and Google Gemini API, modify the `data.json` file 
 ### Find a Related Professor
 Discover professors related to your interests and needs through our advanced search and AI-powered conversation feature.
 
-![Find a Professor](./image/image3.png)
+![Find a Professor](./image/image4.png)
 
 ### Major Advisor
 Get personalized advice on choosing your major and career path based on your interests and strengths.
 chatting with your AI
 
-![Major Advisor](./image/image1.png)
+![Major Advisor](./image/image5.png)
 
 ### Course Planner
 Plan your courses and ensure you meet all graduation requirements with our course planning tool.
