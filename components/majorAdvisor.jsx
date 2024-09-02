@@ -60,7 +60,12 @@ const MajorAdvisor = () => {
       {recommendation && (
         <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-md shadow-md">
           <h2 className="text-xl font-bold mb-2">Recommended Major and Career Path</h2>
-          <p className="whitespace-pre-line">{recommendation}</p>
+          <div className="space-y-2">
+            <p><strong>Interests:</strong> {interests}</p>
+            <p><strong>Strengths:</strong> {strengths}</p>
+            <p><strong>Career Goals:</strong> {careerGoals}</p>
+            <p><strong>Recommendation:</strong> {recommendation}</p>
+          </div>
         </div>
       )}
     </div>
