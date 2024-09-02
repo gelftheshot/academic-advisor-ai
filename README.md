@@ -31,13 +31,14 @@ Discover professors related to your interests and needs through our advanced sea
 
 ### Major Advisor
 Get personalized advice on choosing your major and career path based on your interests and strengths.
+chatting with your AI
 
-![Major Advisor](./image/image3.png)
+![Major Advisor](./image/image1.png)
 
 ### Course Planner
 Plan your courses and ensure you meet all graduation requirements with our course planning tool.
 
-![Course Planner](./image/image4.png)
+![Course Planner](./image/image6.png)
 
 ## Code Structure
 
