@@ -1,5 +1,5 @@
 {
-  "name": "ai-customer-support",
+  "name": "academic-advisor-ai",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -18,7 +18,6 @@
     "firebase": "^10.12.5",
     "langchain": "^0.2.16",
     "next": "14.2.5",
-    "python3": "^0.0.1",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.2.1",
