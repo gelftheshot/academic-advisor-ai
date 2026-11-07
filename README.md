@@ -1,78 +1,75 @@
 # Academic Advisor AI
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+An academic-planning application for professor search, major advice, and course planning.
 
-## Overview
+![Academic Advisor AI home screen](./image/image3.png)
 
-Academic Advisor AI is your ultimate tool for academic planning, finding professors, and getting career advice. The application provides features such as finding related professors, getting major and career advice, and planning courses.
+## What it does
 
-![Academic Advisor AI](./image/image3.png)
+- Find professors using a question about a student's interests.
+- Ask for major and career-path guidance.
+- Use a separate course-planning interface.
 
-## Getting Started
+## Run locally
 
-First, run the development server:
+You need Node.js and npm. The professor-data loading step also uses Python 3, a Google Generative AI API key, and a Pinecone development project.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+git clone https://github.com/gelftheshot/academic-advisor-ai.git
+cd academic-advisor-ai
+npm ci
+```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create `.env.local` in the project root:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```dotenv
+GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key
+PINECONE_API_KEY=your_pinecone_api_key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Load the professor data
 
-To use your own Pinecone API and Google Gemini API, modify the `data.json` file and include your own embedded data. Make sure to put your API keys in the `.env.local` file. Then run the `load.py` file to load the data into the application.
+Review `data.json` and use a separate development Pinecone project containing no data you need to keep. The existing `load.py` script deletes an index named `rag-index` if one already exists, then creates and populates that index. Do not run it against a shared or production index.
 
-## Features
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install python-dotenv pinecone langchain-community langchain-google-genai
+python load.py
+```
 
-### Find a Related Professor
-Discover professors related to your interests and needs through our advanced search and AI-powered conversation feature.
+The loader reads `.env.local`. Its Python dependencies are not version-locked in this repository.
 
-![Find a Professor](./image/image4.png)
+### Start the application
 
-### Major Advisor
-Get personalized advice on choosing your major and career path based on your interests and strengths.
-chatting with your AI
+```bash
+npm run dev
+```
 
-![Major Advisor](./image/image5.png)
+Open [http://localhost:3000](http://localhost:3000).
 
-### Course Planner
-Plan your courses and ensure you meet all graduation requirements with our course planning tool.
+For a production build:
 
-![Course Planner](./image/image6.png)
+```bash
+npm run build
+npm start
+```
 
-### Mobile View
-It looks like this on mobile:
+The AI routes use the provider model configured in `app/api/chat/route.js` and `app/api/majorAdvisor/route.js`. Verify provider access and current model availability when setting up your own environment.
 
-![Mobile View](./image/image1.png)
+## Screens
 
-## Code Structure
+| Professor search | Major advisor |
+| --- | --- |
+| ![Professor search](./image/image4.png) | ![Major advisor](./image/image5.png) |
 
-### `app/page.js`
-This file contains the main landing page of the application.
+![Course planner](./image/image6.png)
 
-### `app/layout.js`
-This file contains the layout structure of the application, including the header and sidebar.
+## Main files
 
-### `app/coursePlanner/page.js`
-This file contains the Course Planner page component.
+- `app/api/chat/route.js`: question embedding, retrieval from `rag-index`, and generated professor-search answers.
+- `app/api/majorAdvisor/route.js`: generated major-advice responses.
+- `app/coursePlanner/page.js`: course-planning interface.
+- `load.py`: professor-data preparation and index loading.
 
-### `components/sidebar.jsx`
-This file contains the sidebar component of the application.
-
-### `components/message.jsx`
-This file contains the Message component used in the chat feature.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+[Project write-up](https://www.lihongebre.com/projects/academic-advisor-ai)
